@@ -7,13 +7,13 @@ from routes.ai_routes import ai_bp
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s"
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 def create_app() -> Flask:
-    """Application factory — creates and configures the Flask app."""
+    """Application factory - creates and configures the Flask app."""
     # Validate required environment variables before anything else
     validate_config()
 
@@ -22,7 +22,7 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(ai_bp)
 
-    # Health endpoint — confirms Flask is up and MongoDB is reachable
+    # Health endpoint - confirms Flask is up and MongoDB is reachable
     @app.route("/health", methods=["GET"])
     def health():
         try:
@@ -36,7 +36,10 @@ def create_app() -> Flask:
     return app
 
 
+# Module-level app instance - required for Gunicorn to find the app.
+# Render starts the server with: gunicorn app:app
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
     logger.info("Starting Flask development server...")
-    app.run(debug=True, host="0.0.0.0", port=5000, use_reloader=False)
+    app.run(debug=False, host="0.0.0.0", port=5000, use_reloader=False)
